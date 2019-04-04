@@ -6,6 +6,8 @@
 class Segment {
 
   //2. Create x and y member variables to hold the location of each segment.
+int x;
+int y; 
 
   // 3. Add a constructor with parameters to initialize each variable.
 
