@@ -11,6 +11,8 @@ class Segment {
 
   // 3. Add a constructor with parameters to initialize each variable.
   Segment(int x, int y) {
+    this.x = x;
+    this.y = y;
   }
 
   // 4. Add getter and setter methods for both the x and y member variables.
@@ -80,7 +82,7 @@ void drawFood() {
 
 void drawSnake() {
   fill(157, 202, 83);
-  rect(X, Y, 10, 10);
+  rect(head.x, head.y, 10, 10);
 
   //test your code
 }
@@ -122,19 +124,31 @@ void move() {
 // 18. Complete the keyPressed method below. Use if statements to set your direction variable depending on what key is pressed.
 
 void keyPressed() {
-  if(keyCode == 38){
+  if ((keyCode == 40 || keyCode == 83) && !direction.equals("down")) {
     direction = "up";
+  } else if ((keyCode == 37 || keyCode == 65) && !direction.equals("right")) {
+    direction = "left";
+  } else if ((keyCode == 39 || keyCode == 68) && !direction.equals("left")) {
+    direction = "right";
+  } else if ((keyCode == 38 || keyCode == 87) && !direction.equals("up")) {
+    direction = "down";
   }
 }
 
 
 
 // 19. check if your head is out of bounds (teleport your snake head to the other side).
-
 void checkBoundaries() {
+  if (head.x >= 500) {
+    head.x = 0;
+  } else if (head.x <= 0) {
+    head.x = 500;
+  } else if (head.y >= 500) {
+    head.y = 0;
+  } else if (head.y <= 0) {
+    head.y = 500;
+  }
 }
-
-
 
 //20. Make sure that the key for your current direction’s opposite doesn’t work(i.e. If you’re going up, down key shouldn’t work)
 
@@ -143,7 +157,12 @@ void checkBoundaries() {
 // 21. Complete the missing parts of the collision method below.
 
 void collision() {
-
+  if (head.x == foodX && head.y == foodY) {
+    food++;
+    println(food);
+    foodX = ((int)random(50)*10);
+    foodY = ((int)random(50)*10);
+  }
   // If the segment is colliding with a piece of food...
   // Increase the amount of food eaten and set foodX and foodY to new random locations.
 }
@@ -157,22 +176,32 @@ void collision() {
  **/
 
 //  1. Create and initialize an ArrayList of Segments. (This will be your snake tail!)
-
+ArrayList<Segment> tail = new ArrayList<Segment>();
 
 // 2. Complete the missing parts of the manageTail method below and call it in the draw method.
 
 void manageTail() {
 
   //Call the drawTail and checkTailCollision methods.
+  drawTail();
+  checkTailCollision();
 
   // Add a new Segment to your ArrayList that has the same X and Y as the head of your snake.
-
+  Segment a = new Segment(head.x, head.y);
+  tail.add(a);
   // To keep your tail the right length:
   // while the tail size is greater than the number of food pieces eaten, remove the first Segment in your tail.
+  while(tail.size() > food){
+    tail.remove(0);
+  }
 }
 
 void drawTail() {
   // Draw a 10 by 10 rectangle for each Segment in your snake ArrayList.
+  for(int i = 0; i < tail.size(); i++){
+  fill(79, 113, 222);
+  rect(tail.get(i).x, tail.get(i).y, 10, 10);
+  }
 }
 
 
@@ -181,6 +210,11 @@ void drawTail() {
 void checkTailCollision() {
 
   // If your head has the same location as one of your segments...
+  for(int i = 0; i < tail.size(); i++){
+    if(head.x == tail.get(i).x && head.y == tail.get(i).y){
+      food = 1; 
+    }
+  }
 
   // reset your food variable
 
